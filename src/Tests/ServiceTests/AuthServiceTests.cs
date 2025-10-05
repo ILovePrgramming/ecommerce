@@ -1,5 +1,4 @@
-﻿
-namespace ECommerce.Tests.ServiceTests
+﻿namespace ECommerce.Tests.ServiceTests
 {
     using Core.Interfaces;
     using Data.Context;

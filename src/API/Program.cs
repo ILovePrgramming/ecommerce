@@ -3,6 +3,7 @@ namespace Ecommerce
     using ECommerce.API.Extensions;
     using ECommerce.API.Middleware;
     using ECommerce.Data.Context;
+    using Microsoft.EntityFrameworkCore;
     using System;
 
     public class Program
