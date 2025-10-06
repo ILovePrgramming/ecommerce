@@ -30,6 +30,8 @@
 
         /// <summary>
         /// Gets all products.
+        /// Time Complexity: O(m) where m = number of products.
+        /// Space Complexity: O(m).
         /// </summary>
         /// <returns>A list of products.</returns>
         [HttpGet]
@@ -49,6 +51,8 @@
 
         /// <summary>
         /// Gets a product by its identifier.
+        /// Time Complexity: O(1).
+        /// Space Complexity: O(1).
         /// </summary>
         /// <param name="id">The product identifier.</param>
         /// <returns>The product with the specified identifier.</returns>
@@ -74,6 +78,8 @@
 
         /// <summary>
         /// Gets products with optional search, filter, and pagination.
+        /// Time Complexity: O(m) for filtering and search, O(k) for pagination (k = pageSize).
+        /// Space Complexity: O(k)
         /// GET /api/product/query?search=phone&minPrice=100&page=2&pageSize=5
         /// </summary>
         [HttpGet("query")]
@@ -122,6 +128,8 @@
 
         /// <summary>
         /// Adds a new product.
+        /// Time Complexity: O(1).
+        /// Space Complexity: O(1).
         /// </summary>
         [HttpPost]
         public IActionResult Add([FromBody, Required] ProductDto product)
@@ -143,6 +151,8 @@
 
         /// <summary>
         /// Updates an existing product.
+        /// Time Complexity: O(1).
+        /// Space Complexity: O(1).
         /// </summary>
         [HttpPut("{id}")]
         public IActionResult Update(int id, [FromBody, Required] ProductDto product)
@@ -166,6 +176,8 @@
 
         /// <summary>
         /// Deletes a product by its identifier.
+        /// Time Complexity: O(1).
+        /// Space Complexity: O(1).
         /// </summary>
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)

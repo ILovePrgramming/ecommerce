@@ -43,6 +43,8 @@
 
         /// <summary>
         /// Retrieves the cart for the specified user from persistent storage.
+        /// Time Complexity: O(n) where n = number of cart items for the user.
+        /// Space Complexity: O(n) for the returned cart list.
         /// </summary>
         [HttpGet("{userId}")]
         public IActionResult Get(string userId)
@@ -64,6 +66,8 @@
 
         /// <summary>
         /// Adds an item to the cart stored in the current session.
+        /// Time Complexity: O(n) for searching existing item; O(1) for add.
+        /// Space Complexity: O(n) for session cart.
         /// </summary>
         [HttpPost("session/add")]
         public IActionResult AddToSessionCart([FromBody, Required] CartDto dto)
@@ -92,6 +96,8 @@
 
         /// <summary>
         /// Removes an item from the cart stored in the current session.
+        /// Time Complexity: O(n) for removal.
+        /// Space Complexity: O(n) for session cart.
         /// </summary>
         [HttpDelete("session/remove/{productId}")]
         public IActionResult RemoveFromSessionCart(int productId)
@@ -115,6 +121,8 @@
 
         /// <summary>
         /// Clears all items from the cart stored in the current session.
+        /// Time Complexity: O(1).
+        /// Space Complexity: O(1).
         /// </summary>
         [HttpDelete("session/clear")]
         public IActionResult ClearSessionCart()
@@ -133,6 +141,8 @@
 
         /// <summary>
         /// Adds an item to the user's cart in persistent storage.
+        /// Time Complexity: O(1) for add; O(1) for stock check.
+        /// Space Complexity: O(1).
         /// </summary>
         [HttpPost("{userId}")]
         public IActionResult AddToCart(string userId, [FromBody, Required] CartDto dto)
@@ -156,6 +166,8 @@
 
         /// <summary>
         /// Removes an item from the user's cart in persistent storage.
+        /// Time Complexity: O(1) for removal.
+        /// Space Complexity: O(1).
         /// </summary>
         [HttpDelete("{userId}/{productId}")]
         public IActionResult Remove(string userId, int productId)
@@ -179,6 +191,8 @@
 
         /// <summary>
         /// Clears all items from the user's cart in persistent storage.
+        /// Time Complexity: O(n) where n = number of cart items.
+        /// Space Complexity: O(1).
         /// </summary>
         [HttpDelete("clear/{userId}")]
         public IActionResult Clear(string userId)
