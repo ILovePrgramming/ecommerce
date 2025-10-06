@@ -25,5 +25,10 @@ namespace ECommerce.Core.Entities
         /// Gets or sets the user identifier associated with the cart item.
         /// </summary>
         public string UserId { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the date and time when the cart item was added.
+        /// </summary>
+        public DateTime AddedAt { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 {
     using Context;
     using Core.Entities;
+    using ECommerce.Core.DTOs;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -12,50 +13,145 @@
     {
         private readonly AppDbContext _context;
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="CartRepository"/> class with the specified database context.
-        /// </summary>
-        /// <param name="context">The application's database context.</param>
         public CartRepository(AppDbContext context) => _context = context;
 
-        /// <summary>
-        /// Retrieves all cart items for the specified user.
-        /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <returns>A collection of <see cref="CartItem"/> objects belonging to the user.</returns>
         public IEnumerable<CartItem> GetCart(string userId) =>
             _context.CartItems.Where(c => c.UserId == userId).ToList();
 
-        /// <summary>
-        /// Adds a new cart item to the database.
-        /// </summary>
-        /// <param name="item">The <see cref="CartItem"/> to add.</param>
         public void Add(CartItem item) => _context.CartItems.Add(item);
 
-        /// <summary>
-        /// Removes a cart item for the specified user and product.
-        /// </summary>
-        /// <param name="userId">The user identifier.</param>
-        /// <param name="productId">The product identifier.</param>
+        public void UpdateQuantity(string userId, int productId, int newQuantity)
+        {
+            var item = _context.CartItems.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId);
+            if (item != null)
+            {
+                item.Quantity = newQuantity;
+            }
+        }
+
+
         public void Remove(string userId, int productId)
         {
             var item = _context.CartItems.FirstOrDefault(c => c.UserId == userId && c.ProductId == productId);
             if (item != null) _context.CartItems.Remove(item);
         }
 
-        /// <summary>
-        /// Removes all cart items for the specified user.
-        /// </summary>
-        /// <param name="userId">The user identifier.</param>
+
+        public void BulkRemove(string userId, IEnumerable<int> productIds)
+        {
+            var items = _context.CartItems.Where(c => c.UserId == userId && productIds.Contains(c.ProductId));
+            _context.CartItems.RemoveRange(items);
+        }
+
+
         public void Clear(string userId)
         {
             var items = _context.CartItems.Where(c => c.UserId == userId);
             _context.CartItems.RemoveRange(items);
         }
 
-        /// <summary>
-        /// Saves all changes made in this context to the database.
-        /// </summary>
+
         public void Save() => _context.SaveChanges();
+
+
+        public bool ValidateStock(string userId)
+        {
+            var items = GetCart(userId);
+            foreach (var item in items)
+            {
+                var product = _context.Products.Find(item.ProductId);
+                if (product == null || product.Stock < item.Quantity)
+                    return false;
+            }
+            return true;
+        }
+
+        public void ClearExpiredItems(string userId, TimeSpan expiry)
+        {
+            var now = DateTime.UtcNow;
+            var items = _context.CartItems
+                .Where(c => c.UserId == userId && now - c.AddedAt > expiry)
+                .ToList();
+            _context.CartItems.RemoveRange(items);
+        }
+
+
+        public void SaveCartForLater(string userId)
+        {
+            var items = GetCart(userId).ToList();
+            var savedCart = new SavedCart
+            {
+                UserId = userId,
+                Items = items,
+                SavedAt = DateTime.UtcNow
+            };
+            _context.Set<SavedCart>().Add(savedCart);
+        }
+
+        public IEnumerable<CartItem> GetSavedCart(string userId)
+        {
+            var savedCart = _context.Set<SavedCart>().FirstOrDefault(c => c.UserId == userId);
+            return savedCart?.Items ?? Enumerable.Empty<CartItem>();
+        }
+
+
+        public void StoreCartHistory(string userId)
+        {
+            var items = GetCart(userId).ToList();
+            var history = new CartHistory
+            {
+                UserId = userId,
+                Items = items,
+                CheckedOutAt = DateTime.UtcNow
+            };
+            _context.Set<CartHistory>().Add(history);
+        }
+
+
+        public void MergeGuestCart(string guestId, string userId)
+        {
+            var guestItems = GetCart(guestId);
+            foreach (var item in guestItems)
+            {
+                var existing = _context.CartItems.FirstOrDefault(c => c.UserId == userId && c.ProductId == item.ProductId);
+                if (existing != null)
+                    existing.Quantity += item.Quantity;
+                else
+                    _context.CartItems.Add(new CartItem { UserId = userId, ProductId = item.ProductId, Quantity = item.Quantity });
+            }
+            Clear(guestId);
+        }
+
+
+        public bool ValidateCart(string userId)
+        {
+            var items = GetCart(userId);
+            foreach (var item in items)
+            {
+                var product = _context.Products.Find(item.ProductId);
+                if (product == null || product.Stock < item.Quantity /* || product.IsDiscontinued */)
+                    return false;
+            }
+            return true;
+        }
+
+        public CartSummaryDto GetCartSummary(string userId)
+        {
+            var items = GetCart(userId);
+            decimal subtotal = items.Sum(i => _context.Products.Find(i.ProductId)?.Price ?? 0 * i.Quantity);
+            decimal tax = subtotal * 0.1m; // Example: 10% tax
+            decimal shipping = 5.0m; // Example: flat shipping
+            decimal total = subtotal + tax + shipping;
+            return new CartSummaryDto { Subtotal = subtotal, Tax = tax, Shipping = shipping, Total = total };
+        }
+
+
+        public IEnumerable<Product> GetRecommendations(string userId)
+        {
+            var items = GetCart(userId);
+            // Example: recommend products not in cart
+            var productIds = items.Select(i => i.ProductId).ToList();
+            return _context.Products.Where(p => !productIds.Contains(p.Id)).Take(5).ToList();
+        }
     }
 }

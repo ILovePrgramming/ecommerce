@@ -18,3 +18,11 @@ C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\obj\Debug\net8.0
 C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\obj\Debug\net8.0\refint\Tests.dll
 C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\obj\Debug\net8.0\Tests.pdb
 C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\obj\Debug\net8.0\ref\Tests.dll
+C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\bin\Debug\net8.0\API.deps.json
+C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\bin\Debug\net8.0\API.runtimeconfig.json
+C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\bin\Debug\net8.0\appsettings.json
+C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\bin\Debug\net8.0\API.staticwebassets.endpoints.json
+C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\bin\Debug\net8.0\API.exe
+C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\bin\Debug\net8.0\API.dll
+C:\Users\user1\Source\Repos\ILovePrgramming\ecommerce\src\Tests\bin\Debug\net8.0\API.pdb

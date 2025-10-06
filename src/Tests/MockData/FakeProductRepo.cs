@@ -1,13 +1,8 @@
-﻿using ECommerce.Core.Entities;
-using ECommerce.Data.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ECommerce.Tests.MockData
+﻿namespace ECommerce.Tests.MockData
 {
+    using ECommerce.Core.Entities;
+    using ECommerce.Data.Repositories;
+
     public class FakeProductRepo : ProductRepository
     {
         public FakeProductRepo() : base(null) { }

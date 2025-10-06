@@ -41,6 +41,19 @@
         public void Add(Product product) => _context.Products.Add(product);
 
         /// <summary>
+        /// Deletes a product from the database by its unique identifier.
+        /// </summary>
+        /// <param name="id">The unique identifier of the product to delete.</param>
+        public void Delete(int id)
+        {
+            var product = _context.Products.Find(id);
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+            }
+        }
+
+        /// <summary>
         /// Saves all changes made in the context to the database.
         /// </summary>
         public void Save() => _context.SaveChanges();

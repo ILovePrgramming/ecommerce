@@ -1,9 +1,10 @@
-﻿
-namespace ECommerce.API.Controllers
+﻿namespace ECommerce.API.Controllers
 {
-    using Core.DTOs;
     using Core.Interfaces;
+    using Core.DTOs;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Logging;
+    using System.ComponentModel.DataAnnotations;
 
     /// <summary>
     /// Controller for managing products in the ECommerce API.
@@ -14,14 +15,17 @@ namespace ECommerce.API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductService _service;
+        private readonly ILogger<ProductController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductController"/> class.
         /// </summary>
         /// <param name="service">The product service.</param>
-        public ProductController(IProductService service)
+        /// <param name="logger">The logger instance.</param>
+        public ProductController(IProductService service, ILogger<ProductController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
         /// <summary>
@@ -29,7 +33,19 @@ namespace ECommerce.API.Controllers
         /// </summary>
         /// <returns>A list of products.</returns>
         [HttpGet]
-        public IActionResult GetAll() => Ok(_service.GetAll());
+        public IActionResult GetAll()
+        {
+            try
+            {
+                var products = _service.GetAll();
+                return Ok(products);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving all products.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
 
         /// <summary>
         /// Gets a product by its identifier.
@@ -37,44 +53,136 @@ namespace ECommerce.API.Controllers
         /// <param name="id">The product identifier.</param>
         /// <returns>The product with the specified identifier.</returns>
         [HttpGet("{id}")]
-        public IActionResult Get(int id) => Ok(_service.GetById(id));
+        public IActionResult Get(int id)
+        {
+            if (id <= 0)
+                return BadRequest("Invalid product ID.");
+
+            try
+            {
+                var product = _service.GetById(id);
+                if (product == null)
+                    return NotFound();
+                return Ok(product);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error retrieving product {ProductId}", id);
+                return StatusCode(500, "Internal server error.");
+            }
+        }
 
         /// <summary>
-        /// Creates a new product.
+        /// Gets products with optional search, filter, and pagination.
+        /// GET /api/product/query?search=phone&minPrice=100&page=2&pageSize=5
         /// </summary>
-        /// <param name="dto">The product data transfer object.</param>
-        /// <returns>The created product.</returns>
-        [HttpPost]
-        public IActionResult Create(ProductDto dto)
+        [HttpGet("query")]
+        public IActionResult Query(
+            [FromQuery] string? search,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
         {
-            _service.Add(dto);
-            return CreatedAtAction(nameof(Get), new { id = dto.Name }, dto);
+            if (page <= 0 || pageSize <= 0)
+                return BadRequest("Page and pageSize must be greater than zero.");
+
+            try
+            {
+                var products = _service.GetAll();
+
+                if (!string.IsNullOrWhiteSpace(search))
+                    products = products.Where(p => p.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
+
+                if (minPrice.HasValue)
+                    products = products.Where(p => p.Price >= minPrice.Value);
+                if (maxPrice.HasValue)
+                    products = products.Where(p => p.Price <= maxPrice.Value);
+
+                var totalCount = products.Count();
+                var paged = products
+                    .Skip((page - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToList();
+
+                return Ok(new
+                {
+                    TotalCount = totalCount,
+                    Page = page,
+                    PageSize = pageSize,
+                    Items = paged
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error querying products.");
+                return StatusCode(500, "Internal server error.");
+            }
+        }
+
+        /// <summary>
+        /// Adds a new product.
+        /// </summary>
+        [HttpPost]
+        public IActionResult Add([FromBody, Required] ProductDto product)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                _service.Add(product);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding product.");
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         /// <summary>
         /// Updates an existing product.
         /// </summary>
-        /// <param name="id">The product identifier.</param>
-        /// <param name="dto">The product data transfer object.</param>
-        /// <returns>No content.</returns>
         [HttpPut("{id}")]
-        public IActionResult Update(int id, ProductDto dto)
+        public IActionResult Update(int id, [FromBody, Required] ProductDto product)
         {
-            _service.Update(id, dto);
-            return NoContent();
+            if (id <= 0)
+                return BadRequest("Invalid product ID.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                _service.Update(id, product);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating product {ProductId}", id);
+                return StatusCode(500, "Internal server error.");
+            }
         }
 
         /// <summary>
         /// Deletes a product by its identifier.
         /// </summary>
-        /// <param name="id">The product identifier.</param>
-        /// <returns>No content.</returns>
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            _service.Delete(id);
-            return NoContent();
+            if (id <= 0)
+                return BadRequest("Invalid product ID.");
+
+            try
+            {
+                _service.Delete(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting product {ProductId}", id);
+                return StatusCode(500, "Internal server error.");
+            }
         }
     }
-
 }

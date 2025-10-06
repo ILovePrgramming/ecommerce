@@ -6,6 +6,7 @@
     using Microsoft.IdentityModel.Tokens;
     using Services.Services;
     using System.Text;
+    using API.Middleware;
 
     /// <summary>
     /// Provides extension methods for registering application services and JWT authentication.
@@ -50,6 +51,15 @@
                         IssuerSigningKey = new SymmetricSecurityKey(key)
                     };
                 });
+        }
+
+        /// <summary>
+        /// Adds the logging middleware to the request pipeline.
+        /// </summary>
+        /// <param name="app">The application builder to add the middleware to.</param>
+        public static void UseLoggingMiddleware(this IApplicationBuilder app)
+        {
+            app.UseMiddleware<LoggingMiddleware>();
         }
     }
 

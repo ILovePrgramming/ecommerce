@@ -4,6 +4,100 @@
     "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Tests\\Tests.csproj": {}
   },
   "projects": {
+    "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\API\\API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\API\\API.csproj",
+        "projectName": "API",
+        "projectPath": "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\API\\API.csproj",
+        "packagesPath": "C:\\Users\\user1\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\API\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\user1\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {},
+          "https://msr-isrc.pkgs.visualstudio.com/_packaging/MicrosoftAcademic/nuget/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Core\\Core.csproj": {
+                "projectPath": "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Core\\Core.csproj"
+              },
+              "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Data\\Data.csproj": {
+                "projectPath": "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Data\\Data.csproj"
+              },
+              "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Services\\Services.csproj": {
+                "projectPath": "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Services\\Services.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.5, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
     "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Core\\Core.csproj": {
       "version": "1.0.0",
       "restore": {
@@ -270,6 +364,9 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
+              "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\API\\API.csproj": {
+                "projectPath": "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\API\\API.csproj"
+              },
               "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Core\\Core.csproj": {
                 "projectPath": "C:\\Users\\user1\\Source\\Repos\\ILovePrgramming\\ecommerce\\src\\Core\\Core.csproj"
               },
@@ -298,6 +395,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Mvc.Abstractions": {
+              "target": "Package",
+              "version": "[2.3.0, )"
+            },
             "Microsoft.EntityFrameworkCore.InMemory": {
               "target": "Package",
               "version": "[9.0.9, )"
@@ -305,6 +406,10 @@
             "Microsoft.Extensions.Configuration": {
               "target": "Package",
               "version": "[9.0.9, )"
+            },
+            "Moq": {
+              "target": "Package",
+              "version": "[4.20.72, )"
             },
             "NUnit": {
               "target": "Package",
